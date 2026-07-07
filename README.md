@@ -1,4 +1,8 @@
-# AI ROI Calculator
+# AI_ROI_Project
+
+Test project to estimate the ROI of AI projects.
+
+## AI ROI Calculator
 
 Small Streamlit app for estimating the return on an AI initiative.
 
@@ -21,4 +25,3 @@ streamlit run app.py
 - `app.py` - Streamlit UI
 - `roi_model.py` - ROI calculation logic
 - `requirements.txt` - Python dependencies
-
