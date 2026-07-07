@@ -4,6 +4,7 @@ import streamlit as st
 import math
 
 from roi_model import calculate_roi
+from roi_db import fetch_scenarios, init_db, save_scenario
 
 
 st.set_page_config(
@@ -24,6 +25,9 @@ def money1(value: float) -> str:
 
 def pct(value: float) -> str:
     return f"{value:.1f}%"
+
+
+init_db()
 
 
 st.markdown(
@@ -87,6 +91,7 @@ st.markdown(
 with st.sidebar:
     st.header("Inputs")
     st.caption("Adjust the assumptions to match your team and use case.")
+    scenario_name = st.text_input("Scenario name", value="My ROI scenario")
 
     team_size = st.number_input("Team size impacted", min_value=1, value=10, step=1)
     hours_saved_per_week = st.number_input("Hours saved per person per week", min_value=0.0, value=3.0, step=0.5)
@@ -155,6 +160,7 @@ with left:
             ],
         }
     )
+
     breakdown["Direction"] = breakdown["Annual Value"].apply(lambda x: "Positive" if x >= 0 else "Cost")
     chart = (
         alt.Chart(breakdown)
@@ -194,6 +200,10 @@ with right:
     else:
         st.info("Break-even does not occur within 36 months.")
 
+    if st.button("Save this scenario", use_container_width=True):
+        save_scenario(scenario_name, inputs, result)
+        st.success(f"Saved '{scenario_name}' to the database.")
+
 
 st.subheader("12-Month Cash Flow")
 cashflow = result["cashflow"]
@@ -223,10 +233,39 @@ st.altair_chart(cashflow_chart, use_container_width=True)
 with st.expander("Assumptions and formula notes", expanded=False):
     st.markdown(
         """
-        - Monthly labor savings = `team size × hours saved per week × 4.33 × loaded hourly cost`
+        - Monthly labor savings = `team size x hours saved per week x 4.33 x loaded hourly cost`
         - Annual benefits = labor savings + revenue uplift + manual cost reduction
         - First-year cost = implementation + training + 12 months of subscription
-        - ROI = `(annual benefits - first-year cost) / first-year cost × 100`
+        - ROI = `(annual benefits - first-year cost) / first-year cost x 100`
         - Payback = `(implementation + training) / monthly net benefit`
         """
     )
+
+with st.expander("Saved scenarios", expanded=False):
+    scenarios = fetch_scenarios(limit=10)
+    if scenarios.empty:
+        st.info("No saved scenarios yet. Save one using the button above.")
+    else:
+        display = scenarios.copy()
+        display["annual_benefits"] = display["annual_benefits"].map(money)
+        display["net_annual_value"] = display["net_annual_value"].map(money)
+        display["roi_pct"] = display["roi_pct"].map(lambda x: f"{x:.1f}%")
+        display["payback_months"] = display["payback_months"].map(lambda x: "N/A" if pd.isna(x) else f"{x:.1f}")
+        st.dataframe(
+            display[
+                [
+                    "id",
+                    "scenario_name",
+                    "saved_at",
+                    "team_size",
+                    "hours_saved_per_week",
+                    "annual_benefits",
+                    "net_annual_value",
+                    "roi_pct",
+                    "payback_months",
+                    "breakeven_month",
+                ]
+            ],
+            use_container_width=True,
+            hide_index=True,
+        )

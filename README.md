@@ -12,6 +12,7 @@ Small Streamlit app for estimating the return on an AI initiative.
 - Adds optional revenue uplift and manual-cost reduction
 - Calculates first-year ROI, payback period, and break-even timing
 - Shows a 12-month cash-flow view
+- Saves scenarios in a local SQLite database
 
 ## Run it
 
@@ -24,4 +25,5 @@ streamlit run app.py
 
 - `app.py` - Streamlit UI
 - `roi_model.py` - ROI calculation logic
+- `roi_db.py` - SQLite storage helpers
 - `requirements.txt` - Python dependencies
