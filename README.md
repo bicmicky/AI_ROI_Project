@@ -1,6 +1,6 @@
 # AI_ROI_Project
 
-Test project to estimate the ROI of AI projects.
+Test project to estimate the ROI of AI projects. This is my first Streamlit app, so please be gentle with your feedback. I welcome any suggestions for improvements.
 
 ## AI ROI Calculator
 
