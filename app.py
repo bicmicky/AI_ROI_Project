@@ -1,7 +1,10 @@
+"""AI ROI calculator Streamlit application."""
+
+import math
 import altair as alt
 import pandas as pd
 import streamlit as st
-import math
+
 
 from roi_model import calculate_roi
 from roi_db import fetch_scenarios, init_db, save_scenario
@@ -15,16 +18,19 @@ st.set_page_config(
 )
 
 
-def money(value: float) -> str:
-    return f"${value:,.0f}"
+def money(monetaryvalue: float) -> str:
+    """Format a number as currency without decimal places."""
+    return f"${monetaryvalue:,.0f}"
 
 
-def money1(value: float) -> str:
-    return f"${value:,.1f}"
+def money1(amount: float) -> str:
+    """Format a number as currency with one decimal place."""
+    return f"${amount:,.1f}"
 
 
-def pct(value: float) -> str:
-    return f"{value:.1f}%"
+def pct(percentage: float) -> str:
+    """Format a number as a percentage with one decimal place."""
+    return f"{percentage:.1f}%"
 
 
 init_db()
@@ -81,7 +87,8 @@ st.markdown(
     """
     <div class="hero">
         <h1>AI ROI Calculator</h1>
-        <p>Estimate the business value of an AI initiative across labor savings, revenue uplift, and payback time.</p>
+        <p>Estimate the business value of an AI initiative across 
+        labor savings, revenue uplift, and payback time.</p>
     </div>
     """,
     unsafe_allow_html=True,
