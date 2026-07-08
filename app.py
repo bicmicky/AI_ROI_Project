@@ -1,4 +1,4 @@
-"""AI ROI calculator Streamlit application."""
+"""AI Project ROI calculator Streamlit application."""
 
 import math
 import altair as alt
